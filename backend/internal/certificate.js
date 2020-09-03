@@ -141,11 +141,11 @@ const internalCertificate = {
 								});
 						})
 						.then((in_use_result) => {
-							// Is CloudFlare, no config needed, so skip 3 and 5.
-							if (data.meta.cloudflare_use) {
+							// Is Lua, no config needed, so skip 3 and 5.
+							if (data.meta.luadns_use) {
 								return internalNginx.reload().then(() => {
 									// 4. Request cert
-									return internalCertificate.requestLetsEncryptCloudFlareDnsSsl(certificate, data.meta.cloudflare_token);
+									return internalCertificate.requestLetsEncryptLuaDnsSsl(certificate, data.meta.luadns_token);
 								})
 									.then(internalNginx.reload)
 									.then(() => {
@@ -774,14 +774,14 @@ const internalCertificate = {
 
 	/**
 	 * @param   {Object}  certificate   the certificate row
-	 * @param	{String} apiToken		the cloudflare api token
+	 * @param	{String} apiToken		the luadns api token
 	 * @returns {Promise}
 	 */
-	requestLetsEncryptCloudFlareDnsSsl: (certificate, apiToken) => {
-		logger.info('Requesting Let\'sEncrypt certificates via Cloudflare DNS for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
+	requestLetsEncryptLuaDnsSsl: (certificate, apiToken) => {
+		logger.info('Requesting Let\'sEncrypt certificates via Lua DNS for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
-		let tokenLoc = '~/cloudflare-token';
-		let storeKey = 'echo "dns_cloudflare_api_token = ' + apiToken + '" > ' + tokenLoc;	
+		let tokenLoc = '~/luadns-token';
+		let storeKey = 'echo "dns_luadns_api_token = ' + apiToken + '" > ' + tokenLoc;	
 
 		let cmd = 
 			storeKey + ' && ' +
@@ -790,7 +790,7 @@ const internalCertificate = {
 			'--agree-tos ' +
 			'--email "' + certificate.meta.letsencrypt_email + '" ' +			
 			'--domains "' + certificate.domain_names.join(',') + '" ' +
-			'--dns-cloudflare --dns-cloudflare-credentials ' + tokenLoc +
+			'--dns-luadns --dns-luadns-credentials ' + tokenLoc +
 			(le_staging ? ' --staging' : '')
 			+ ' && rm ' + tokenLoc;
 
@@ -818,7 +818,7 @@ const internalCertificate = {
 			})
 			.then((certificate) => {
 				if (certificate.provider === 'letsencrypt') {
-					let renewMethod = certificate.meta.cloudflare_use ? internalCertificate.renewLetsEncryptCloudFlareSsl : internalCertificate.renewLetsEncryptSsl;		
+					let renewMethod = certificate.meta.luadns_use ? internalCertificate.renewLetsEncryptLuaSsl : internalCertificate.renewLetsEncryptSsl;		
 
 					return renewMethod(certificate)
 						.then(() => {
@@ -878,7 +878,7 @@ const internalCertificate = {
 	 * @param   {Object}  certificate   the certificate row
 	 * @returns {Promise}
 	 */
-	renewLetsEncryptCloudFlareSsl: (certificate) => {
+	renewLetsEncryptLuaSsl: (certificate) => {
 		logger.info('Renewing Let\'sEncrypt certificates for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
 		let cmd = certbot_command + ' renew --non-interactive ' +

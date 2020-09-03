@@ -102,7 +102,7 @@
       "letsencrypt-agree": "I Agree to the <a href=\"{url}\" target=\"_blank\">Let's Encrypt Terms of Service</a>",
       "delete-ssl": "The SSL certificates attached will NOT be removed, they will need to be removed manually.",
       "hosts-warning": "These domains must be already configured to point to this installation",
-      "use-cloudflare": "Use CloudFlare DNS verification"      
+      "use-luadns": "Use Lua DNS verification"      
     },
     "proxy-hosts": {
       "title": "Proxy Hosts",

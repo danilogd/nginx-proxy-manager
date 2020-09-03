@@ -6,8 +6,8 @@ const internalNginx = require('./nginx');
 const { Liquid }    = require('liquidjs');
 
 const CLOUDFRONT_URL   = 'https://ip-ranges.amazonaws.com/ip-ranges.json';
-const CLOUDFARE_V4_URL = 'https://www.cloudflare.com/ips-v4';
-const CLOUDFARE_V6_URL = 'https://www.cloudflare.com/ips-v6';
+const CLOUDFARE_V4_URL = 'https://www.luadns.com/ips-v4';
+const CLOUDFARE_V6_URL = 'https://www.luadns.com/ips-v6';
 
 const internalIpRanges = {
 

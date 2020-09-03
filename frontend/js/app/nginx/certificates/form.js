@@ -21,20 +21,20 @@ module.exports = Mn.View.extend({
         other_certificate:              '#other_certificate',
         other_certificate_key:          '#other_certificate_key',
         other_intermediate_certificate: '#other_intermediate_certificate',
-        cloudflare_switch:              'input[name="meta[cloudflare_use]"]',
-        cloudflare_token:               'input[name="meta[cloudflare_token]"',
-        cloudflare:                     '.cloudflare'
+        luadns_switch:              'input[name="meta[luadns_use]"]',
+        luadns_token:               'input[name="meta[luadns_token]"',
+        luadns:                     '.luadns'
     },
 
     events: {
-        'change @ui.cloudflare_switch': function() {
-            let checked = this.ui.cloudflare_switch.prop('checked');
+        'change @ui.luadns_switch': function() {
+            let checked = this.ui.luadns_switch.prop('checked');
             if (checked) {                
-                this.ui.cloudflare_token.prop('required', 'required');
-                this.ui.cloudflare.show();
+                this.ui.luadns_token.prop('required', 'required');
+                this.ui.luadns.show();
             } else {                
-                this.ui.cloudflare_token.prop('required', false);
-                this.ui.cloudflare.hide();                
+                this.ui.luadns_token.prop('required', false);
+                this.ui.luadns.hide();                
             }
         },
         'click @ui.save': function (e) {
@@ -53,7 +53,7 @@ module.exports = Mn.View.extend({
 
 
             let domain_err = false;
-            if (!data.meta.cloudflare_use) {                
+            if (!data.meta.luadns_use) {                
                 data.domain_names.split(',').map(function (name) {
                     if (name.match(/\*/im)) {
                         domain_err = true;
@@ -62,7 +62,7 @@ module.exports = Mn.View.extend({
             }
 
             if (domain_err) {
-                alert('Cannot request Let\'s Encrypt Certificate for wildcard domains when not using CloudFlare DNS');
+                alert('Cannot request Let\'s Encrypt Certificate for wildcard domains when not using Lua DNS');
                 return;
             }
 
@@ -70,8 +70,8 @@ module.exports = Mn.View.extend({
             if (typeof data.meta !== 'undefined' && typeof data.meta.letsencrypt_agree !== 'undefined') {
                 data.meta.letsencrypt_agree = !!data.meta.letsencrypt_agree;
             }
-            if (typeof data.meta !== 'undefined' && typeof data.meta.cloudflare_use !== 'undefined') {
-                data.meta.cloudflare_use = !!data.meta.cloudflare_use;
+            if (typeof data.meta !== 'undefined' && typeof data.meta.luadns_use !== 'undefined') {
+                data.meta.luadns_use = !!data.meta.luadns_use;
             }
 
             if (typeof data.domain_names === 'string' && data.domain_names) {
@@ -167,8 +167,8 @@ module.exports = Mn.View.extend({
             return typeof this.meta.letsencrypt_agree !== 'undefined' ? this.meta.letsencrypt_agree : false;
         },
 
-        getCloudflareUse: function () {
-            return typeof this.meta.cloudflare_use !== 'undefined' ? this.meta.cloudflare_use : false;
+        getLuaUse: function () {
+            return typeof this.meta.luadns_use !== 'undefined' ? this.meta.luadns_use : false;
         }
     },
 
@@ -185,7 +185,7 @@ module.exports = Mn.View.extend({
             },
             createFilter: /^(?:[^.]+\.?)+[^.]$/
         });
-        this.ui.cloudflare.hide();
+        this.ui.luadns.hide();
     },
 
     initialize: function (options) {

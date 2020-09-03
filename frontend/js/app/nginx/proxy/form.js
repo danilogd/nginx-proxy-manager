@@ -33,9 +33,9 @@ module.exports = Mn.View.extend({
         hsts_enabled:       'input[name="hsts_enabled"]',
         hsts_subdomains:    'input[name="hsts_subdomains"]',
         http2_support:      'input[name="http2_support"]',
-        cloudflare_switch:  'input[name="meta[cloudflare_use]"]',
-        cloudflare_token:   'input[name="meta[cloudflare_token]"',
-        cloudflare:         '.cloudflare',
+        luadns_switch:  'input[name="meta[luadns_use]"]',
+        luadns_token:   'input[name="meta[luadns_token]"',
+        luadns:         '.luadns',
         forward_scheme:     'select[name="forward_scheme"]',
         letsencrypt:        '.letsencrypt'
     },
@@ -49,7 +49,7 @@ module.exports = Mn.View.extend({
             let id = this.ui.certificate_select.val();
             if (id === 'new') {
                 this.ui.letsencrypt.show().find('input').prop('disabled', false);
-                this.ui.cloudflare.hide();
+                this.ui.luadns.hide();
             } else {
                 this.ui.letsencrypt.hide().find('input').prop('disabled', true);
             }
@@ -95,14 +95,14 @@ module.exports = Mn.View.extend({
             }
         },
 
-        'change @ui.cloudflare_switch': function() {
-            let checked = this.ui.cloudflare_switch.prop('checked');
+        'change @ui.luadns_switch': function() {
+            let checked = this.ui.luadns_switch.prop('checked');
             if (checked) {                
-                this.ui.cloudflare_token.prop('required', 'required');
-                this.ui.cloudflare.show();
+                this.ui.luadns_token.prop('required', 'required');
+                this.ui.luadns.show();
             } else {                
-                this.ui.cloudflare_token.prop('required', false);
-                this.ui.cloudflare.hide();                
+                this.ui.luadns_token.prop('required', false);
+                this.ui.luadns.hide();                
             }
         },
 
@@ -151,7 +151,7 @@ module.exports = Mn.View.extend({
             // Check for any domain names containing wildcards, which are not allowed with letsencrypt
             if (data.certificate_id === 'new') {                
                 let domain_err = false;
-                if (!data.meta.cloudflare_use) {
+                if (!data.meta.luadns_use) {
                     data.domain_names.map(function (name) {
                         if (name.match(/\*/im)) {
                             domain_err = true;
@@ -160,11 +160,11 @@ module.exports = Mn.View.extend({
                 }
 
                 if (domain_err) {
-                    alert('Cannot request Let\'s Encrypt Certificate for wildcard domains without CloudFlare DNS.');
+                    alert('Cannot request Let\'s Encrypt Certificate for wildcard domains without Lua DNS.');
                     return;
                 }
 
-                data.meta.cloudflare_use = data.meta.cloudflare_use === '1';
+                data.meta.luadns_use = data.meta.luadns_use === '1';
                 data.meta.letsencrypt_agree = data.meta.letsencrypt_agree === '1';                
             } else {
                 data.certificate_id = parseInt(data.certificate_id, 10);

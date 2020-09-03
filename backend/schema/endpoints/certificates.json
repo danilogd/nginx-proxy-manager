@@ -42,10 +42,10 @@
         "letsencrypt_agree": {
           "type": "boolean"
         },
-        "cloudflare_use": {
+        "luadns_use": {
           "type": "boolean"
         },
-        "cloudflare_token": {
+        "luadns_token": {
           "type": "string"
         }
       }
